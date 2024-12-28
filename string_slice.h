@@ -10,12 +10,14 @@ typedef struct {
 
 Str_t ss_from_cstring(const char *s);
 int ss_cmp(Str_t a, Str_t b);
+int ss_eq(Str_t a, Str_t b);
 
 Str_t ss_trim_left(Str_t s);
 Str_t ss_trim_right(Str_t s);
 Str_t ss_trim(Str_t s);
 
 Str_t ss_subslice(Str_t s, size_t start_inc, size_t end_exc);
+Str_t ss_split_once(Str_t *s, char c);
 
 #ifdef SS_IMPL
 #include <ctype.h>
@@ -98,6 +100,27 @@ Str_t ss_subslice(Str_t s, size_t start_inc, size_t end_exc) {
   };
 }
 
+Str_t ss_split_once(Str_t *s, char c) {
+  Str_t res = {
+      .s = s->s,
+      .len = 0,
+  };
+
+  while (*s->s != c && s->len > 0) {
+    s->s++;
+    s->len--;
+    res.len++;
+  }
+
+  // if we didn't run out of characters, increment once to leave the c character
+  // out of the result
+  if (s->len > 0) {
+    s->len--;
+    s->s++;
+  }
+
+  return res;
+}
 #endif // IMPL_SS
 
 #define STRING_SLICE_H

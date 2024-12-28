@@ -1,7 +1,13 @@
 #include <assert.h>
+#include <stdio.h>
 
 #define SS_IMPL
 #include "string_slice.h"
+
+void print_ss(Str_t s) {
+  for (size_t i = 0; i < s.len; i++)
+    putchar(s.s[i]);
+}
 
 int main(void) {
   Str_t s1 = ss_from_cstring("Hello world");
@@ -32,6 +38,10 @@ int main(void) {
 
   Str_t huh = ss_subslice(hello, 1, 0);
   assert(ss_eq(huh, s3) && "problematic edge case");
+
+  Str_t hello_world = s2;
+  Str_t hello_new = ss_split_once(&hello_world, ' ');
+  assert(ss_eq(hello_new, hello_good) && "splitting does not work");
 
   return 0;
 }
